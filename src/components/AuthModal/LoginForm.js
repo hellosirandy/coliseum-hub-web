@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import EmailIcon from '@material-ui/icons/Email';
 import LockIcon from '@material-ui/icons/Lock';
+import { tryAuth } from '../../store/actions/index';
 import AuthInput from './AuthInput';
 import SubmitButton from './SubmitButton';
 
@@ -25,6 +26,13 @@ class LoginForm extends React.Component {
       };
     });
   }
+  handleSubmitClick = () => {
+    const authData = {
+      email: this.state.controls.email,
+      password: this.state.controls.password,
+    };
+    this.props.onTryAuth(authData);
+  }
   render() {
     const { classes, authError, isLoading } = this.props;
     return (
@@ -43,7 +51,7 @@ class LoginForm extends React.Component {
           icon={<LockIcon />}
           onChange={event => this.updateInputState('password', event)}
         />
-        <SubmitButton isLoading={isLoading} />
+        <SubmitButton isLoading={isLoading} onClick={this.handleSubmitClick} />
       </div>
     );
   }
@@ -65,7 +73,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    // onTryAuth: authData => dispatch(tryAuth(authData)),
+    onTryAuth: authData => dispatch(tryAuth(authData)),
   };
 };
 

@@ -1,9 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import { authLogout } from '../../store/actions/index';
 
-const dropDown = ({ anchorEl, onClose, onLoginClick }) => {
+const dropDown = ({
+  anchorEl, onClose, onLoginClick, isAuthenticated, onAuthLogout,
+}) => {
+  const content = isAuthenticated ? (
+    <MenuItem onClick={() => {
+      onClose();
+      onAuthLogout();
+    }}
+    >Logout
+    </MenuItem>
+  ) : (
+    <MenuItem onClick={() => {
+        onClose();
+        onLoginClick();
+      }}
+    >Login
+    </MenuItem>
+  );
   return (
     <Menu
       id="menu-appbar"
@@ -19,12 +38,7 @@ const dropDown = ({ anchorEl, onClose, onLoginClick }) => {
       open={Boolean(anchorEl)}
       onClose={onClose}
     >
-      <MenuItem onClick={() => {
-        onClose();
-        onLoginClick();
-      }}
-      >Login
-      </MenuItem>
+      {content}
     </Menu>
   );
 };
@@ -39,4 +53,16 @@ dropDown.propTypes = {
   onLoginClick: PropTypes.func.isRequired,
 };
 
-export default dropDown;
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: Boolean(state.auth.token),
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onAuthLogout: () => dispatch(authLogout()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(dropDown);
