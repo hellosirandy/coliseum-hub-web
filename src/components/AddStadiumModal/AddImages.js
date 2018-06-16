@@ -17,37 +17,68 @@ const AddButton = styled.button`
   }
 `;
 
-const addImages = ({ classes }) => {
-  return (
-    <FormControl component="fieldset" className={classes.formControl}>
-      <FormHelperText component="legend">Upload Photos</FormHelperText>
-      <FormGroup row>
-        <Grid container spacing={24} className={classes.grid}>
-          <Grid item xs={3}>
-            <AddButton
-              className={classes.button}
-              onClick={() => {
-                this.fileInput.click();
-              }}
-            >
-              <CloudUploadIcon className={classes.icon} color="primary" />
-              <input
-                type="file"
-                className={classes.fileInput}
-                ref={(ref) => {
-                  this.fileInput = ref;
+class AddImages extends React.Component {
+  state = {
+    images: [],
+  }
+  handleFileInputChange = (event) => {
+    const { files } = event.target;
+    for (let i = 0; i < files.length; i += 1) {
+      const reader = new FileReader();
+      reader.readAsDataURL(files[i]);
+      reader.onloadend = () => {
+        const newImage = {
+          key: files[i].name + files[i].lastModified,
+          src: reader.result,
+        };
+        this.setState({
+          images: [...this.state.images, newImage],
+        });
+      };
+    }
+  }
+  render() {
+    const { classes } = this.props;
+    const { images } = this.state;
+    const renderImages = images.map(image => (
+      <Grid item xs={3} key={image.key} >
+        <img className={classes.image} src={image.src} alt="stadium" />
+      </Grid>
+    ));
+    return (
+      <FormControl component="fieldset" className={classes.formControl}>
+        <FormHelperText component="legend">Upload Photos</FormHelperText>
+        <FormGroup row>
+          <Grid container spacing={24} className={classes.grid}>
+            {renderImages}
+            <Grid item xs={3}>
+              <AddButton
+                className={classes.button}
+                onClick={() => {
+                  this.fileInput.click();
                 }}
-              />
-            </AddButton>
+              >
+                <CloudUploadIcon className={classes.image} color="primary" />
+                <input
+                  type="file"
+                  className={classes.fileInput}
+                  ref={(ref) => {
+                    this.fileInput = ref;
+                  }}
+                  multiple
+                  onChange={this.handleFileInputChange}
+                />
+              </AddButton>
+            </Grid>
           </Grid>
-        </Grid>
-      </FormGroup>
-    </FormControl>
-  );
-};
+        </FormGroup>
+      </FormControl>
+    );
+  }
+}
 
 const styles = theme => ({
-  icon: {
+  image: {
     width: '100%',
     height: '100%',
   },
@@ -65,5 +96,5 @@ const styles = theme => ({
   },
 });
 
-export default withStyles(styles)(addImages);
+export default withStyles(styles)(AddImages);
 
