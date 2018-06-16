@@ -34,3 +34,19 @@ export const exchangeRefreshToken = async (refreshToken) => {
   );
   return res.json();
 };
+
+export const storeImages = async (images, token) => {
+  const res = await fetch(
+    'https://us-central1-coliseum-hub-86341.cloudfunctions.net/storeImages',
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        images,
+      }),
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  return res.json();
+};

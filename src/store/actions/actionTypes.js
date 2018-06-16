@@ -5,3 +5,5 @@ export const AUTH_SET_TOKEN = 'AUTH_SET_TOKEN';
 export const AUTH_REMOVE_TOKEN = 'AUTH_REMOVE_TOKEN';
 export const AUTH_FAILED = 'AUTH_FAILED';
 export const AUTH_CHANGE_STATUS = 'AUTH_CHANGE_STATUS';
+
+export const ADD_STADIUMS = 'ADD_STADIUMS';

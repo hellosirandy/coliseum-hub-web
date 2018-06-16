@@ -1,6 +1,8 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
+import UUID from 'uuid-v4';
+import PropTypes from 'prop-types';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -18,9 +20,6 @@ const AddButton = styled.button`
 `;
 
 class AddImages extends React.Component {
-  state = {
-    images: [],
-  }
   handleFileInputChange = (event) => {
     const { files } = event.target;
     for (let i = 0; i < files.length; i += 1) {
@@ -28,21 +27,19 @@ class AddImages extends React.Component {
       reader.readAsDataURL(files[i]);
       reader.onloadend = () => {
         const newImage = {
-          key: files[i].name + files[i].lastModified + new Date().getTime(),
-          src: reader.result,
+          key: UUID(),
+          base64: reader.result,
+          name: files[i].name,
         };
-        this.setState({
-          images: [...this.state.images, newImage],
-        });
+        this.props.onChange(newImage);
       };
     }
   }
   render() {
-    const { classes } = this.props;
-    const { images } = this.state;
+    const { classes, images } = this.props;
     const renderImages = images.map(image => (
       <Grid item xs={3} key={image.key} >
-        <img className={classes.image} src={image.src} alt="stadium" />
+        <img className={classes.image} src={image.base64} alt="stadium" />
       </Grid>
     ));
     return (
@@ -95,6 +92,16 @@ const styles = theme => ({
     display: 'none',
   },
 });
+
+AddImages.defaultProps = {
+  images: [],
+  onChange: null,
+};
+
+AddImages.propTypes = {
+  images: PropTypes.arrayOf(PropTypes.object),
+  onChange: PropTypes.func,
+};
 
 export default withStyles(styles)(AddImages);
 
