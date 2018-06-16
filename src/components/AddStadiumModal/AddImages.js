@@ -28,8 +28,9 @@ class AddImages extends React.Component {
       reader.onloadend = () => {
         const newImage = {
           key: UUID(),
-          base64: reader.result,
+          base64: files[i],
           name: files[i].name,
+          src: reader.result,
         };
         this.props.onChange(newImage);
       };
@@ -39,7 +40,7 @@ class AddImages extends React.Component {
     const { classes, images } = this.props;
     const renderImages = images.map(image => (
       <Grid item xs={3} key={image.key} >
-        <img className={classes.image} src={image.base64} alt="stadium" />
+        <img className={classes.image} src={image.src} alt="stadium" />
       </Grid>
     ));
     return (
