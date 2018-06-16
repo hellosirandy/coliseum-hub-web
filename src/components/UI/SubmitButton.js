@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-const submitButton = ({ isLoading, classes, onClick }) => {
+const submitButton = ({
+  isLoading, classes, onClick, text,
+}) => {
   return (
     <Button
       disabled={isLoading}
@@ -14,7 +16,7 @@ const submitButton = ({ isLoading, classes, onClick }) => {
       fullWidth
       onClick={onClick}
     >
-      LOGIN
+      {text}
       {isLoading && <CircularProgress color="secondary" size={24} className={classes.buttonProgress} />}
     </Button>
   );
@@ -36,11 +38,13 @@ const styles = theme => ({
 submitButton.defaultProps = {
   isLoading: false,
   onClick: null,
+  text: 'Submit',
 };
 
 submitButton.propTypes = {
   isLoading: PropTypes.bool,
   onClick: PropTypes.func,
+  text: PropTypes.string,
 };
 
 export default withStyles(styles)(submitButton);

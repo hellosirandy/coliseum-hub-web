@@ -20,8 +20,7 @@ class AddStadiumModal extends React.Component {
               <Typography variant="title" color="inherit">Add Stadium</Typography>
             </Toolbar>
           </AppBar>
-          <Typography component="div" style={{ padding: 8 * 3 }}>
-            {/* <LoginForm handleClose={onClose} /> */}
+          <Typography component="div" className={classes.content}>
             <AddForm handleClose={onClose} />
           </Typography>
           <AddStadiumModalWrapped />
@@ -40,6 +39,11 @@ const styles = theme => ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
+  },
+  content: {
+    padding: theme.spacing.unit * 3,
+    paddingTop: 0,
+    paddingBottom: 0,
   },
 });
 

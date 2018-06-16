@@ -28,7 +28,7 @@ class AddImages extends React.Component {
       reader.readAsDataURL(files[i]);
       reader.onloadend = () => {
         const newImage = {
-          key: files[i].name + files[i].lastModified,
+          key: files[i].name + files[i].lastModified + new Date().getTime(),
           src: reader.result,
         };
         this.setState({

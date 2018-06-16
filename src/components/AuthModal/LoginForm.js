@@ -6,7 +6,7 @@ import EmailIcon from '@material-ui/icons/Email';
 import LockIcon from '@material-ui/icons/Lock';
 import { tryAuth } from '../../store/actions/index';
 import AuthInput from './AuthInput';
-import SubmitButton from './SubmitButton';
+import SubmitButton from '../UI/SubmitButton';
 
 class LoginForm extends React.Component {
   state = {
@@ -51,7 +51,7 @@ class LoginForm extends React.Component {
           icon={<LockIcon />}
           onChange={event => this.updateInputState('password', event)}
         />
-        <SubmitButton isLoading={isLoading} onClick={this.handleSubmitClick} />
+        <SubmitButton isLoading={isLoading} onClick={this.handleSubmitClick} text="Login" />
       </div>
     );
   }
