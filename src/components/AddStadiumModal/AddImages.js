@@ -28,7 +28,7 @@ class AddImages extends React.Component {
       reader.onloadend = () => {
         const newImage = {
           key: UUID(),
-          base64: files[i],
+          base64: reader.result,
           name: files[i].name,
           src: reader.result,
         };

@@ -10,9 +10,9 @@ exports.storeImages = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
     const body = JSON.parse(req.body);
     const image = body.images[0];
-    console.log(image);
-    console.log(image.name)
-    fs.writeFileSync(`/tmp/${image.name}`, image.base64, "base64", err => {
+    console.log(image.base64);
+    const base64 = image.base64.replace(/^data:image\/\w+;base64,/, '');
+    fs.writeFileSync(`/tmp/${image.name}`, base64, "base64", err => {
       console.log(err);
       return response.status(500).json({
         error: err
@@ -26,7 +26,7 @@ exports.storeImages = functions.https.onRequest((req, res) => {
         destination: "/stadiums/" + uuid + "." + image.name.split('.').pop(),
         metadata: {
           metadata: {
-            contentType: "image",
+            contentType: "image/png",
             firebaseStorageDownloadTokens: uuid
           }
         }
@@ -37,7 +37,7 @@ exports.storeImages = functions.https.onRequest((req, res) => {
             imageUrl: "https://firebasestorage.googleapis.com/v0/b/" +
               bucket.name +
               "/o/" +
-              encodeURIComponent(file.name) +
+              encodeURIComponent(file) +
               "?alt=media&token=" +
               uuid
           });
