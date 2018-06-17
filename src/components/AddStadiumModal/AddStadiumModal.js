@@ -21,7 +21,7 @@ class AddStadiumModal extends React.Component {
             </Toolbar>
           </AppBar>
           <Typography component="div" className={classes.content}>
-            <AddForm handleClose={onClose} />
+            <AddForm onClose={onClose} />
           </Typography>
           <AddStadiumModalWrapped />
         </div>

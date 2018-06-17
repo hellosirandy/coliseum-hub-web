@@ -20,16 +20,18 @@ class AddForm extends React.Component {
       },
     });
   }
-  handleSubmitButtonClick = () => {
+  handleSubmitButtonClick = async () => {
     const { images } = this.state.controls;
     const stadium = {
       images,
     };
-    this.props.onAddStadium(stadium);
+    await this.props.onAddStadium(stadium);
+    this.props.onClose();
   }
   render() {
     const { controls } = this.state;
     const { images } = controls;
+    const { isLoading } = this.props;
     return (
       <div style={styles.container}>
         <AddInput label="Name" />
@@ -38,7 +40,7 @@ class AddForm extends React.Component {
         <AddInput label="Architect" />
         <AddPicker label="Opened" />
         <AddImages label="Images" images={images} onChange={this.handleImagesChange} />
-        <SubmitButton onClick={this.handleSubmitButtonClick} />
+        <SubmitButton onClick={this.handleSubmitButtonClick} isLoading={isLoading} />
       </div>
     );
   }
@@ -52,11 +54,17 @@ const styles = {
   },
 };
 
+const mapStateToProps = (state) => {
+  return {
+    isLoading: state.ui.isLoading,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
   return {
     onAddStadium: stadium => dispatch(addStadium(stadium)),
   };
 };
 
-export default connect(null, mapDispatchToProps)(AddForm);
+export default connect(mapStateToProps, mapDispatchToProps)(AddForm);
 
