@@ -33,7 +33,7 @@ class AddStadiumModal extends React.Component {
 const styles = theme => ({
   paper: {
     position: 'absolute',
-    width: theme.spacing.unit * 60,
+    width: theme.spacing.unit * 70,
     backgroundColor: theme.palette.background.paper,
     boxShadow: 'none',
     top: '50%',
