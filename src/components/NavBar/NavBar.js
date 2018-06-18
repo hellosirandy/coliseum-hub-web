@@ -23,11 +23,6 @@ class NavBar extends React.Component {
   }
   handleAddClick = () => {
     this.setState({ addStaiumModalOpen: true });
-    // resizeImage().then((res) => {
-    //   console.log(res);
-    // }).catch((err) => {
-    //   console.log(err);
-    // });
   }
   handleDropdownClose = () => {
     this.setState({ anchorEl: null });

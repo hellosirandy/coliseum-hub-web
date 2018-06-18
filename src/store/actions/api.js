@@ -50,9 +50,3 @@ export const uploadImages = async (images, token) => {
   );
   return res.json();
 };
-
-export const resizeImage = async () => {
-  const res = await fetch('https://us-central1-coliseum-hub-86341.cloudfunctions.net/resizeImage');
-  console.log(await res.json());
-  // return res.json();
-};

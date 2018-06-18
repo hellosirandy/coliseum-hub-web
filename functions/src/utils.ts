@@ -1,31 +1,50 @@
 import * as fs from 'fs';
 import * as UUID from 'uuid-v4';
 import { gcconfig } from './sensitives'
-import * as Storage from '@google-cloud/storage';
+import * as GCS from '@google-cloud/storage';
+import * as CPP from 'child-process-promise';
 
-export const storeSingleImage = (image) => { 
-  const base64 = image.base64.replace(/^data:image\/\w+;base64,/, '');
-  fs.writeFileSync(`/tmp/${image.name}`, base64, "base64");
-  const gcs = Storage(gcconfig);
-  const bucket = gcs.bucket(`${gcconfig.projectId}.appspot.com`);
-  const uuid = UUID();
+const storage = GCS(gcconfig);
+const bucket = storage.bucket(`${gcconfig.projectId}.appspot.com`);
+
+const convertAndUploadImage = async (source, extension, uuid, size = null) => {
+  let destination = null;
+  if (size) {
+    destination = `/tmp/${size}${source.split('/').pop()}`;
+    const { spawn } = CPP;
+    await spawn('convert', [source, '-thumbnail', `${size}>`, destination]);
+  }
+  const folder = size ? size : 'original'
   return bucket.upload(
-    `/tmp/${image.name}`, {
-      destination: "/stadiums/" + uuid + "." + image.name.split('.').pop(),
+    destination ? destination : source,
+    {
+      destination: `/stadiums/${folder}/` + uuid + '.' + extension,
       metadata: {
         metadata: {
           contentType: "image",
           firebaseStorageDownloadTokens: uuid
         }
       }
-    })
-      .then(uploadResponse => {
-        const imageUrl = "https://firebasestorage.googleapis.com/v0/b/" +
-          bucket.name +
-          "/o/" +
-          encodeURIComponent(uploadResponse[0].name) +
-          "?alt=media&token=" +
-          uuid;
-        return imageUrl;
-      })
+    }
+  )
+}
+
+export const uploadSingleImage = async (image) => { 
+  const base64 = image.base64.replace(/^data:image\/\w+;base64,/, '');
+  const originalURL = `/tmp/${image.name}`;
+  fs.writeFileSync(originalURL, base64, "base64");
+  const uuid = UUID();
+  const sizes = [800, 400, 200, 100];
+  const results = sizes.map(size => {
+    return convertAndUploadImage(originalURL, image.name.split('.').pop(), uuid, size)
+  });
+  await Promise.all(results);
+  const uploadResponse = await convertAndUploadImage(originalURL, image.name.split('.').pop(), uuid);
+  const imageUrl = "https://firebasestorage.googleapis.com/v0/b/" +
+    bucket.name +
+    "/o/" +
+    encodeURIComponent(uploadResponse[0].name) +
+    "?alt=media&token=" +
+    uuid;
+  return imageUrl;
 }
