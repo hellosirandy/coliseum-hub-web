@@ -35,9 +35,9 @@ export const exchangeRefreshToken = async (refreshToken) => {
   return res.json();
 };
 
-export const storeImages = async (images, token) => {
+export const uploadImages = async (images, token) => {
   const res = await fetch(
-    'https://us-central1-coliseum-hub-86341.cloudfunctions.net/storeImages',
+    'https://us-central1-coliseum-hub-86341.cloudfunctions.net/uploadImages',
     {
       method: 'POST',
       body: JSON.stringify({
@@ -49,4 +49,10 @@ export const storeImages = async (images, token) => {
     },
   );
   return res.json();
+};
+
+export const resizeImage = async () => {
+  const res = await fetch('https://us-central1-coliseum-hub-86341.cloudfunctions.net/resizeImage');
+  console.log(await res.json());
+  // return res.json();
 };

@@ -10,6 +10,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import DropDown from './DropDown';
 import AuthModal from '../AuthModal/AuthModal';
 import AddStadiumModal from '../AddStadiumModal/AddStadiumModal';
+import { resizeImage } from '../../store/actions/api';
 
 class NavBar extends React.Component {
   state = {
@@ -23,6 +24,11 @@ class NavBar extends React.Component {
   }
   handleAddClick = () => {
     this.setState({ addStaiumModalOpen: true });
+    resizeImage().then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    });
   }
   handleDropdownClose = () => {
     this.setState({ anchorEl: null });

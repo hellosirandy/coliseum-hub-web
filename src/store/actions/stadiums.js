@@ -1,11 +1,11 @@
 import { authGetToken, uiStartLoading, uiStopLoading } from './index';
-import { storeImages } from './api';
+import { uploadImages } from './api';
 
 export const addStadium = (stadium) => {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     dispatch(uiStartLoading());
     const token = await dispatch(authGetToken());
-    const parsedRes = await storeImages(stadium.images, token);
+    const parsedRes = await uploadImages(stadium.images, token);
     dispatch(uiStopLoading());
   };
 };
