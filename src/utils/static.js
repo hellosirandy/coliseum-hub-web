@@ -8,16 +8,31 @@ export const leagues = {
   basketball: ['NBA'],
 };
 
-export const getLeagues = (sp) => {
-  if (typeof sp !== 'object') {
-    return [];
-  }
-  const keys = Object.keys(sp);
-  const selectedSports = keys.filter((key) => {
-    return sp[key] === true;
-  });
-  return selectedSports.map((sport) => {
-    return leagues[sport.toLowerCase()];
-  });
+export const teams = {
+  mlb: [
+    'Baltimore Orioles',
+    'Boston Red Sox',
+    'Toronto Blue Jays',
+    'Chicago White Sox',
+    'Cleveland Indians',
+    'Detroit Tigers',
+    'Houston Astros',
+    'Kansas City Royals',
+    'Los Angeles Angels',
+    'Minnesota Twins',
+    'New York Yankees',
+    'Oakland Athletics',
+    'Seattle Mariners',
+    'Tampa Bay Rays',
+  ],
+  npb: [],
+  cpbl: [],
+  kbo: [],
+  nfl: [],
+  ncaa: [],
+  'premier league': [],
+  'la liga': [],
+  bundesliga: [],
+  nhl: [],
+  nba: [],
 };
-

@@ -6,14 +6,16 @@ import AddSelection from './AddCheckbox';
 import AddPicker from './AddPicker';
 import AddImages from './AddImages';
 import SubmitButton from '../UI/SubmitButton';
-import { sports, getLeagues } from '../../utils/index';
+import AddSelect from './AddSelect';
+import { sports, getLeagues, getTeams } from '../../utils/index';
 
 class AddForm extends React.Component {
   state = {
     controls: {
       name: '',
-      sports: {},
-      leagues: {},
+      sport: {},
+      league: {},
+      tenants: [],
       images: [],
     },
   }
@@ -29,7 +31,7 @@ class AddForm extends React.Component {
       };
     });
   }
-  handleSelectChange = key => value => (event) => {
+  handleCheckboxChange = key => value => (event) => {
     const { checked } = event.target;
     this.setState((prevState) => {
       return {
@@ -40,6 +42,17 @@ class AddForm extends React.Component {
             ...prevState.controls[key],
             [value]: checked,
           },
+        },
+      };
+    });
+  }
+  handleSelectChange = (event) => {
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        controls: {
+          ...prevState.controls,
+          tenants: event.target.value,
         },
       };
     });
@@ -68,6 +81,7 @@ class AddForm extends React.Component {
     const { images } = controls;
     const { isLoading } = this.props;
     const leagues = getLeagues(controls.sport);
+    const teams = getTeams(controls.league);
     return (
       <div style={styles.container}>
         <AddInput label="Name" onChange={this.handleInputChange('name')} />
@@ -75,18 +89,20 @@ class AddForm extends React.Component {
         <AddSelection
           label="Sport"
           items={[sports]}
-          onChange={this.handleSelectChange('sport')}
+          onChange={this.handleCheckboxChange('sport')}
           controls={controls.sport}
         />
         {leagues.length > 0 ? (
           <AddSelection
             label="League"
             items={leagues}
-            onChange={this.handleSelectChange('league')}
+            onChange={this.handleCheckboxChange('league')}
             controls={controls.league}
           />
         ) : null}
-
+        {teams.length > 0 ? (
+          <AddSelect onChange={this.handleSelectChange} items={teams} value={controls.tenants} />
+        ) : null}
         <AddInput label="Capacity" type="number" />
         <AddInput label="Architect" />
         <AddPicker label="Opened" />

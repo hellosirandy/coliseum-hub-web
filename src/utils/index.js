@@ -1,1 +1,2 @@
-export { sports, getLeagues } from './static';
+export { sports, leagues, teams } from './static';
+export { getLeagues, getTeams } from './form';
