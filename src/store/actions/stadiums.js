@@ -6,7 +6,6 @@ export const addStadium = (stadium) => {
     dispatch(uiStartLoading());
     const token = await dispatch(authGetToken());
     const parsedRes = await uploadImages(stadium.images, token);
-    console.log(parsedRes);
     dispatch(uiStopLoading());
   };
 };
