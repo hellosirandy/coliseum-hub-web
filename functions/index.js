@@ -2,7 +2,7 @@ const functions = require('firebase-functions');
 const cors = require('cors')({ origin: true });
 const storeSingleImage = require("./utils").storeSingleImage;
 
-exports.storeImages = functions.https.onRequest((req, res) => {
+exports.uploadImages = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
     const body = JSON.parse(req.body);
     const results = body.images.map(image => {
@@ -19,4 +19,4 @@ exports.storeImages = functions.https.onRequest((req, res) => {
         })
       })
   });
-})
+});
