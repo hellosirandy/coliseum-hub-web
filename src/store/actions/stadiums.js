@@ -1,5 +1,5 @@
 import { authGetToken, uiStartLoading, uiStopLoading } from './index';
-import { uploadImages } from './api';
+import { uploadImages } from '../../apis/api';
 
 export const addStadium = (stadium) => {
   return async (dispatch) => {

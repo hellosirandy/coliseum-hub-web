@@ -1,19 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import UUID from 'uuid-v4';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
-const addSelect = ({ onChange, value, items }) => {
+const addSelect = ({
+  onChange, value, items, classes,
+}) => {
   const content = items.map(item => (
     <MenuItem value={item} key={UUID()}>{item}</MenuItem>
   ));
   return (
-    <FormControl fullWidth>
+    <FormControl fullWidth className={classes.margin}>
       <InputLabel>Tenants</InputLabel>
       <Select
+        gutterBottom
         multiple
         fullWidth
         value={value}
@@ -29,6 +33,12 @@ const addSelect = ({ onChange, value, items }) => {
   );
 };
 
+const styles = theme => ({
+  margin: {
+    margin: `${theme.spacing.unit * 2}px 0`,
+  },
+});
+
 addSelect.defaultProps = {
   onChange: null,
   value: [],
@@ -41,4 +51,4 @@ addSelect.propTypes = {
   items: PropTypes.arrayOf(PropTypes.string),
 };
 
-export default addSelect;
+export default withStyles(styles)(addSelect);

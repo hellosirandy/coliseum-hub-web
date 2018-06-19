@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import GoogleMaps from '@google/maps';
 import { addStadium } from '../../store/actions/index';
 import AddInput from './AddInput';
 import AddSelection from './AddCheckbox';
@@ -8,6 +9,7 @@ import AddImages from './AddImages';
 import SubmitButton from '../UI/SubmitButton';
 import AddSelect from './AddSelect';
 import { sports, getLeagues, getTeams } from '../../utils/index';
+import { getCity } from '../../utils/stadium';
 
 class AddForm extends React.Component {
   state = {
@@ -18,6 +20,11 @@ class AddForm extends React.Component {
       tenants: [],
       images: [],
     },
+  }
+  componentDidMount() {
+    getCity(25.0424415, 121.5573179).then((res) => {
+      console.log(res);
+    });
   }
   handleInputChange = key => (event) => {
     const { value } = event.target;

@@ -1,4 +1,4 @@
-import { firebaseAPIKey } from '../../sensitives';
+import { firebaseAPIKey, googleMapsAPIKey } from '../sensitives';
 
 export const verifyPassword = async (authData) => {
   const url = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=${firebaseAPIKey}`;
@@ -48,5 +48,10 @@ export const uploadImages = async (images, token) => {
       },
     },
   );
+  return res.json();
+};
+
+export const geocode = async (lat, lng) => {
+  const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?result_type=locality&language=en&latlng=${lat},${lng}&key=${googleMapsAPIKey}`);
   return res.json();
 };

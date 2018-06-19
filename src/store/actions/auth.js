@@ -1,6 +1,6 @@
 import { uiStartLoading, uiStopLoading } from './index';
 import { AUTH_SET_TOKEN, AUTH_REMOVE_TOKEN, AUTH_FAILED, AUTH_CHANGE_STATUS } from './actionTypes';
-import { verifyPassword, exchangeRefreshToken } from './api';
+import { verifyPassword, exchangeRefreshToken } from '../../apis/api';
 
 export const tryAuth = (authData) => {
   return async (dispatch) => {
