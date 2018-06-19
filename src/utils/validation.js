@@ -20,7 +20,6 @@ const validate = (val, rules, connectedValue) => {
         break;
       case 'objectNotEmpty':
         isValid = isValid && objectNotEmptyValidator(val);
-        console.log(isValid);
         break;
       default:
         isValid = true;

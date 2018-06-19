@@ -64,6 +64,7 @@ class AddImages extends React.Component {
                     this.fileInput = ref;
                   }}
                   multiple
+                  accept="image/*"
                   onChange={this.handleFileInputChange}
                 />
               </AddButton>

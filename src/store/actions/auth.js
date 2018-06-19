@@ -122,11 +122,11 @@ export const authGetToken = () => {
     let token;
     try {
       token = await dispatch(isTokenValid());
+      console.log(token);
     } catch (e) {
       const refreshToken = localStorage.getItem('ch:auth:refreshToken');
       const parsedRes = await exchangeRefreshToken(refreshToken);
       if (parsedRes.id_token) {
-        console.log('Refresh token worked!');
         dispatch(authStoreToken(
           parsedRes.id_token,
           parsedRes.expires_in,

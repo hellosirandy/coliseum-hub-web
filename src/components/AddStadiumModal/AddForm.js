@@ -45,9 +45,16 @@ class AddForm extends React.Component {
       league: {
         value: {},
         valid: true,
+        validationRules: [],
       },
-      tenants: [],
-      images: [],
+      tenants: {
+        value: [],
+        valid: true,
+      },
+      images: {
+        value: [],
+        valid: true,
+      },
     },
     submitted: false,
   }
@@ -88,12 +95,15 @@ class AddForm extends React.Component {
     });
   }
   handleSelectChange = (event) => {
+    const { value } = event.target;
     this.setState((prevState) => {
       return {
         ...prevState,
         controls: {
           ...prevState.controls,
-          tenants: event.target.value,
+          tenants: {
+            value,
+          },
         },
       };
     });
@@ -104,24 +114,41 @@ class AddForm extends React.Component {
         ...prevState,
         controls: {
           ...prevState.controls,
-          images: [...prevState.controls.images, newImage],
+          images: {
+            value: [...prevState.controls.images.value, newImage],
+          },
         },
       };
     });
   }
   handleSubmitButtonClick = async () => {
-    const { images } = this.state.controls;
-    const stadium = {
-      images,
-    };
     this.setState({ submitted: true });
-    // await this.props.onAddStadium(stadium);
-    // this.props.onClose();
+    const { controls } = this.state;
+    const { onAddStadium, onClose } = this.props;
+    const stadium = {};
+    const keys = Object.keys(controls);
+    for (let i = 0; i < keys.length; i += 1) {
+      const key = keys[i];
+      const { value, valid } = controls[key];
+      // if (!valid) {
+      //   return;
+      // }
+      if (typeof value === 'object') {
+        Object.keys(value).forEach((valueKey) => {
+          if (!value[valueKey]) {
+            delete value[valueKey];
+          }
+        });
+      }
+      stadium[key] = value;
+    }
+    await onAddStadium(stadium);
+    onClose();
   }
   render() {
     const { controls, submitted } = this.state;
     const {
-      images, name, location, capacity, architect, sport, league,
+      images, name, location, capacity, architect, sport, league, tenants,
     } = controls;
     const { isLoading } = this.props;
     const leagues = getLeagues(controls.sport.value);
@@ -146,12 +173,12 @@ class AddForm extends React.Component {
           />
         ) : null}
         {teams.length > 0 ? (
-          <AddSelect onChange={this.handleSelectChange} items={teams} value={controls.tenants} />
+          <AddSelect onChange={this.handleSelectChange} items={teams} value={tenants.value} />
         ) : null}
         <AddInput label="Capacity" type="number" onChange={this.handleInputChange('capacity')} error={!capacity.valid && submitted} />
         <AddInput label="Architect" onChange={this.handleInputChange('architect')} error={!architect.valid && submitted} />
         <AddPicker label="Opened" onChange={this.handleInputChange('open')} />
-        <AddImages label="Images" images={images} onChange={this.handleImagesChange} />
+        <AddImages label="Images" images={images.value} onChange={this.handleImagesChange} />
         <SubmitButton onClick={this.handleSubmitButtonClick} isLoading={isLoading} />
       </div>
     );
