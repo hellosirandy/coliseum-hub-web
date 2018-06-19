@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 
-const addPicker = ({ classes, label }) => {
+const addPicker = ({ classes, label, onChange }) => {
   return (
     <TextField
       label={label}
@@ -13,6 +13,7 @@ const addPicker = ({ classes, label }) => {
         shrink: true,
       }}
       className={classes.margin}
+      onChange={onChange}
     />
   );
 };
@@ -23,8 +24,13 @@ const styles = theme => ({
   },
 });
 
+addPicker.defaultProps = {
+  onChange: null,
+};
+
 addPicker.propTypes = {
   label: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
 };
 
 export default withStyles(styles)(addPicker);

@@ -17,7 +17,6 @@ const addSelect = ({
     <FormControl fullWidth className={classes.margin}>
       <InputLabel>Tenants</InputLabel>
       <Select
-        gutterBottom
         multiple
         fullWidth
         value={value}

@@ -9,26 +9,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
 
 class AddCheckbox extends React.Component {
-  state = {
-    controls: {},
-  };
-
-  handleChange = name => (event) => {
-    const { checked } = event.target;
-    this.setState((prevState) => {
-      return {
-        ...prevState,
-        controls: {
-          ...prevState.controls,
-          [name]: checked,
-        },
-      };
-    });
-  };
-
   render() {
     const {
-      label, items, onChange, controls,
+      label, items, onChange, value, error,
     } = this.props;
     const content = items.map((item, index) => (
       <div key={UUID()}>
@@ -38,7 +21,7 @@ class AddCheckbox extends React.Component {
               key={UUID()}
               control={
                 <Checkbox
-                  checked={controls && controls[it]}
+                  checked={value && value[it]}
                   onChange={onChange(it)}
                   value={it}
                 />
@@ -51,7 +34,7 @@ class AddCheckbox extends React.Component {
       </div>
     ));
     return (
-      <FormControl component="fieldset">
+      <FormControl component="fieldset" error={error}>
         <FormHelperText>{label}</FormHelperText>
         {content}
       </FormControl>
@@ -61,12 +44,14 @@ class AddCheckbox extends React.Component {
 
 AddCheckbox.defaultProps = {
   items: [],
+  error: false,
 };
 
 AddCheckbox.propTypes = {
   label: PropTypes.string.isRequired,
   items: PropTypes.arrayOf(PropTypes.any),
   onChange: PropTypes.func.isRequired,
+  error: PropTypes.bool,
 };
 
 export default AddCheckbox;

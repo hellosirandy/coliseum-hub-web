@@ -1,30 +1,55 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import GoogleMaps from '@google/maps';
 import { addStadium } from '../../store/actions/index';
 import AddInput from './AddInput';
-import AddSelection from './AddCheckbox';
+import AddCheckbox from './AddCheckbox';
 import AddPicker from './AddPicker';
 import AddImages from './AddImages';
 import SubmitButton from '../UI/SubmitButton';
 import AddSelect from './AddSelect';
-import { sports, getLeagues, getTeams } from '../../utils/index';
-import { getCity } from '../../utils/stadium';
+import { sports, getLeagues, getTeams, validate } from '../../utils/index';
 
 class AddForm extends React.Component {
   state = {
     controls: {
-      name: '',
-      sport: {},
-      league: {},
+      name: {
+        value: '',
+        valid: false,
+        validationRules: ['notEmpty'],
+      },
+      location: {
+        value: '',
+        valid: false,
+        validationRules: ['location'],
+      },
+      capacity: {
+        value: '',
+        valid: false,
+        validationRules: ['notEmpty'],
+      },
+      architect: {
+        value: '',
+        valid: true,
+        validationRules: [],
+      },
+      open: {
+        value: '',
+        valid: true,
+        validationRules: [],
+      },
+      sport: {
+        value: {},
+        valid: false,
+        validationRules: ['objectNotEmpty'],
+      },
+      league: {
+        value: {},
+        valid: true,
+      },
       tenants: [],
       images: [],
     },
-  }
-  componentDidMount() {
-    getCity(25.0424415, 121.5573179).then((res) => {
-      console.log(res);
-    });
+    submitted: false,
   }
   handleInputChange = key => (event) => {
     const { value } = event.target;
@@ -33,21 +58,30 @@ class AddForm extends React.Component {
         ...prevState,
         controls: {
           ...prevState.controls,
-          [key]: value,
+          [key]: {
+            ...prevState.controls[key],
+            value,
+            valid: validate(value, prevState.controls[key].validationRules),
+          },
         },
       };
     });
   }
-  handleCheckboxChange = key => value => (event) => {
+  handleCheckboxChange = control => key => (event) => {
     const { checked } = event.target;
+    const value = {
+      ...this.state.controls[control].value,
+      [key]: checked,
+    };
     this.setState((prevState) => {
       return {
         ...prevState,
         controls: {
           ...prevState.controls,
-          [key]: {
-            ...prevState.controls[key],
-            [value]: checked,
+          [control]: {
+            ...prevState.controls[control],
+            value,
+            valid: validate(value, prevState.controls[control].validationRules),
           },
         },
       };
@@ -80,39 +114,43 @@ class AddForm extends React.Component {
     const stadium = {
       images,
     };
-    await this.props.onAddStadium(stadium);
-    this.props.onClose();
+    this.setState({ submitted: true });
+    // await this.props.onAddStadium(stadium);
+    // this.props.onClose();
   }
   render() {
-    const { controls } = this.state;
-    const { images } = controls;
+    const { controls, submitted } = this.state;
+    const {
+      images, name, location, capacity, architect, sport, league,
+    } = controls;
     const { isLoading } = this.props;
-    const leagues = getLeagues(controls.sport);
-    const teams = getTeams(controls.league);
+    const leagues = getLeagues(controls.sport.value);
+    const teams = getTeams(controls.league.value);
     return (
       <div style={styles.container}>
-        <AddInput label="Name" onChange={this.handleInputChange('name')} />
-        <AddInput label="Location" onChange={this.handleInputChange('location')} />
-        <AddSelection
+        <AddInput label="Name" onChange={this.handleInputChange('name')} error={!name.valid && submitted} />
+        <AddInput label="Location" onChange={this.handleInputChange('location')} error={!location.valid && submitted} />
+        <AddCheckbox
           label="Sport"
           items={[sports]}
           onChange={this.handleCheckboxChange('sport')}
-          controls={controls.sport}
+          value={sport.value}
+          error={!sport.valid && submitted}
         />
         {leagues.length > 0 ? (
-          <AddSelection
+          <AddCheckbox
             label="League"
             items={leagues}
             onChange={this.handleCheckboxChange('league')}
-            controls={controls.league}
+            value={league.value}
           />
         ) : null}
         {teams.length > 0 ? (
           <AddSelect onChange={this.handleSelectChange} items={teams} value={controls.tenants} />
         ) : null}
-        <AddInput label="Capacity" type="number" />
-        <AddInput label="Architect" />
-        <AddPicker label="Opened" />
+        <AddInput label="Capacity" type="number" onChange={this.handleInputChange('capacity')} error={!capacity.valid && submitted} />
+        <AddInput label="Architect" onChange={this.handleInputChange('architect')} error={!architect.valid && submitted} />
+        <AddPicker label="Opened" onChange={this.handleInputChange('open')} />
         <AddImages label="Images" images={images} onChange={this.handleImagesChange} />
         <SubmitButton onClick={this.handleSubmitButtonClick} isLoading={isLoading} />
       </div>
