@@ -1,6 +1,6 @@
-import * as admin from 'firebase-admin';
+import {auth} from 'firebase-admin';
 
-export const checkAuthorization = async (auth: admin.auth.Auth, req) => {
+export const checkAuthorization = async (req) => {
   const authorization = req.get('Authorization');
   if (!authorization) {
     throw { error: 'Missing authorization field'};
@@ -9,6 +9,6 @@ export const checkAuthorization = async (auth: admin.auth.Auth, req) => {
     throw { error: 'Invalid Bearer format'};
   }
   const tokenId = req.get('Authorization').split('Bearer ')[1];
-  return auth.verifyIdToken(tokenId);
+  return auth().verifyIdToken(tokenId);
 };
 

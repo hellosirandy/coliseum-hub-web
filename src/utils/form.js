@@ -50,6 +50,8 @@ export const formatStadium = (controls) => {
       value.value.forEach((v) => {
         newValue[v] = true;
       });
+    } else if (key === 'capacity') {
+      newValue = Number(value.value);
     }
     stadium[key] = newValue;
   });

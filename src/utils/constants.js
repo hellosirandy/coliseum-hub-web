@@ -24,6 +24,7 @@ export const teamNames = {
     'Oakland Athletics',
     'Seattle Mariners',
     'Tampa Bay Rays',
+    'Pittsburgh Pirates',
   ],
   npb: [],
   cpbl: [],

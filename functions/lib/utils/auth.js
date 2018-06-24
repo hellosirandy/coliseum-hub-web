@@ -8,7 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkAuthorization = (auth, req) => __awaiter(this, void 0, void 0, function* () {
+const firebase_admin_1 = require("firebase-admin");
+exports.checkAuthorization = (req) => __awaiter(this, void 0, void 0, function* () {
     const authorization = req.get('Authorization');
     if (!authorization) {
         throw { error: 'Missing authorization field' };
@@ -17,6 +18,6 @@ exports.checkAuthorization = (auth, req) => __awaiter(this, void 0, void 0, func
         throw { error: 'Invalid Bearer format' };
     }
     const tokenId = req.get('Authorization').split('Bearer ')[1];
-    return auth.verifyIdToken(tokenId);
+    return firebase_admin_1.auth().verifyIdToken(tokenId);
 });
 //# sourceMappingURL=auth.js.map

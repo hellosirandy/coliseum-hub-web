@@ -1,3 +1,3 @@
 export { uploadImages } from './images'
 export { checkAuthorization } from './auth'
-export { addStadium } from './stadiums';
+export { addStadium, getStadiums } from './stadiums';

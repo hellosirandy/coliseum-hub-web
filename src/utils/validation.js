@@ -55,7 +55,10 @@ const objectNotEmptyValidator = (val) => {
 };
 
 const locationValidator = (val) => {
-  return isNumber(Number(val.lagitude)) && isNumber(Number(val.longitude));
+  return isNumber(Number(val.latitude))
+    && val.latitude <= 90 && val.latitude >= -90
+    && isNumber(Number(val.longitude))
+    && val.longitude <= 180 && val.longitude >= -180;
 };
 
 export const validateForm = (controls) => {
@@ -63,7 +66,6 @@ export const validateForm = (controls) => {
   forOwn(controls, (value) => {
     if (!value.valid) {
       success = false;
-      console.log(value);
       return undefined;
     }
   });

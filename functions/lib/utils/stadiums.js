@@ -8,8 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const firebase_admin_1 = require("firebase-admin");
 const index_1 = require("./index");
-exports.addStadium = (db, data) => __awaiter(this, void 0, void 0, function* () {
+exports.addStadium = (data) => __awaiter(this, void 0, void 0, function* () {
     if (!data) {
         throw { error: "Missing stadium field" };
     }
@@ -24,6 +25,9 @@ exports.addStadium = (db, data) => __awaiter(this, void 0, void 0, function* () 
         }
     }
     const stadium = Object.assign({}, data, { images });
-    return db.collection('stadiums').add(stadium);
+    return firebase_admin_1.firestore().collection('stadiums').add(stadium);
+});
+exports.getStadiums = () => __awaiter(this, void 0, void 0, function* () {
+    return firebase_admin_1.firestore().collection('stadiums').get();
 });
 //# sourceMappingURL=stadiums.js.map

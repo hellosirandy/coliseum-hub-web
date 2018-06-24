@@ -6,4 +6,5 @@ var auth_1 = require("./auth");
 exports.checkAuthorization = auth_1.checkAuthorization;
 var stadiums_1 = require("./stadiums");
 exports.addStadium = stadiums_1.addStadium;
+exports.getStadiums = stadiums_1.getStadiums;
 //# sourceMappingURL=index.js.map

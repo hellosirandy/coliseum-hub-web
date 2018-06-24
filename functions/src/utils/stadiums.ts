@@ -1,6 +1,7 @@
-import { uploadImages } from './index'
+import { firestore as db } from 'firebase-admin';
+import { uploadImages } from './index';
 
-export const addStadium = async (db: FirebaseFirestore.Firestore, data) => {
+export const addStadium = async (data) => {
   if (!data) {
     throw { error: "Missing stadium field" };
   }
@@ -17,5 +18,9 @@ export const addStadium = async (db: FirebaseFirestore.Firestore, data) => {
     ...data,
     images,
   }
-  return db.collection('stadiums').add(stadium)
+  return db().collection('stadiums').add(stadium)
+}
+
+export const getStadiums = async () => {
+  return db().collection('stadiums').get();
 }
