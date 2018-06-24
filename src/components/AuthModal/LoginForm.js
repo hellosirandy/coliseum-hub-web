@@ -7,6 +7,7 @@ import LockIcon from '@material-ui/icons/Lock';
 import { tryAuth } from '../../store/actions/index';
 import AuthInput from './AuthInput';
 import SubmitButton from '../UI/SubmitButton';
+import { loadingTypes } from '../../utils/index';
 
 class LoginForm extends React.Component {
   state = {
@@ -65,7 +66,7 @@ const styles = theme => ({
 
 const mapStateToProps = (state) => {
   return {
-    isLoading: state.ui.isLoading,
+    isLoading: state.ui.isLoading[loadingTypes.login],
     authError: state.auth.authError,
     authStatus: state.auth.authStatus,
   };

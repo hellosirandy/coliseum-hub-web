@@ -1,15 +1,14 @@
 import { authGetToken, uiStartLoading, uiStopLoading } from './index';
-import { uploadImages, test } from '../../apis/api';
+import { createStadium } from '../../apis/index';
+import { loadingTypes } from '../../utils/index';
 
 export const addStadium = (stadium) => {
   return async (dispatch) => {
-    dispatch(uiStartLoading());
+    dispatch(uiStartLoading(loadingTypes.addStadium));
     const token = await dispatch(authGetToken());
-    // const parsedRes = await uploadImages(stadium.images, token);
-    // console.log(parsedRes);
-    const parsedRes = await test(stadium, token);
+    const parsedRes = await createStadium(token, stadium);
     console.log(parsedRes);
-    dispatch(uiStopLoading());
+    dispatch(uiStopLoading(loadingTypes.addStadium));
   };
 };
 

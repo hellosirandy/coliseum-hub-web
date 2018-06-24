@@ -1,4 +1,8 @@
-import { leagues, teams } from './index';
+import {
+  mapValues,
+  pickBy,
+} from 'lodash';
+import { leagueNames, teamNames } from './index';
 
 export const getLeagues = (selectedSports) => {
   if (typeof selectedSports !== 'object') {
@@ -8,7 +12,7 @@ export const getLeagues = (selectedSports) => {
   return keys.filter((key) => {
     return selectedSports[key] === true;
   }).map((sport) => {
-    return leagues[sport.toLowerCase()];
+    return leagueNames[sport.toLowerCase()];
   });
 };
 
@@ -21,7 +25,34 @@ export const getTeams = (selectedLeagues) => {
   keys.filter((key) => {
     return selectedLeagues[key] === true;
   }).forEach((league) => {
-    results = [...results, ...teams[league.toLowerCase()]];
+    results = [...results, ...teamNames[league.toLowerCase()]];
   });
   return results;
 };
+
+export const formatStadium = (controls) => {
+  const stadium = {};
+  mapValues(controls, (value, key) => {
+    let newValue = value.value;
+    if (key === 'sports' || key === 'leagues') {
+      newValue = pickBy(value.value, (v) => {
+        return v === true;
+      });
+    } else if (key === 'open') {
+      newValue = new Date(value.value).getTime();
+    } else if (key === 'location') {
+      newValue = {
+        latitude: Number(value.value.latitude),
+        longitude: Number(value.value.longitude),
+      };
+    } else if (key === 'tenants') {
+      newValue = {};
+      value.value.forEach((v) => {
+        newValue[v] = true;
+      });
+    }
+    stadium[key] = newValue;
+  });
+  return stadium;
+};
+

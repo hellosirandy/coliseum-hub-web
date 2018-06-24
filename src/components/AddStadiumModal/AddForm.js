@@ -7,7 +7,8 @@ import AddPicker from './AddPicker';
 import AddImages from './AddImages';
 import SubmitButton from '../UI/SubmitButton';
 import AddSelect from './AddSelect';
-import { sports, getLeagues, getTeams, validate } from '../../utils/index';
+import AddLocation from './AddLocation';
+import { sportNames, getLeagues, getTeams, formatStadium, validate, validateForm, loadingTypes } from '../../utils/index';
 
 class AddForm extends React.Component {
   state = {
@@ -18,7 +19,7 @@ class AddForm extends React.Component {
         validationRules: ['notEmpty'],
       },
       location: {
-        value: '',
+        value: {},
         valid: false,
         validationRules: ['location'],
       },
@@ -37,12 +38,12 @@ class AddForm extends React.Component {
         valid: true,
         validationRules: [],
       },
-      sport: {
+      sports: {
         value: {},
         valid: false,
         validationRules: ['objectNotEmpty'],
       },
-      league: {
+      leagues: {
         value: {},
         valid: true,
         validationRules: [],
@@ -69,6 +70,23 @@ class AddForm extends React.Component {
             ...prevState.controls[key],
             value,
             valid: validate(value, prevState.controls[key].validationRules),
+          },
+        },
+      };
+    });
+  }
+  handleLocationChange = (key, event) => {
+    const { value } = this.state.controls.location;
+    value[key] = event.target.value;
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        controls: {
+          ...prevState.controls,
+          location: {
+            ...prevState.controls.location,
+            value,
+            valid: validate(value, prevState.controls.location.validationRules),
           },
         },
       };
@@ -102,6 +120,7 @@ class AddForm extends React.Component {
         controls: {
           ...prevState.controls,
           tenants: {
+            ...prevState.controls.tenants,
             value,
           },
         },
@@ -115,6 +134,7 @@ class AddForm extends React.Component {
         controls: {
           ...prevState.controls,
           images: {
+            ...prevState.controls.images,
             value: [...prevState.controls.images.value, newImage],
           },
         },
@@ -124,56 +144,45 @@ class AddForm extends React.Component {
   handleSubmitButtonClick = async () => {
     this.setState({ submitted: true });
     const { controls } = this.state;
-    const { onAddStadium, onClose } = this.props;
-    const stadium = {};
-    const keys = Object.keys(controls);
-    for (let i = 0; i < keys.length; i += 1) {
-      const key = keys[i];
-      const { value, valid } = controls[key];
-      // if (!valid) {
-      //   return;
-      // }
-      if (typeof value === 'object') {
-        Object.keys(value).forEach((valueKey) => {
-          if (!value[valueKey]) {
-            delete value[valueKey];
-          }
-        });
-      }
-      stadium[key] = value;
+    const valid = validateForm(controls);
+    if (!valid) {
+      return;
     }
+    const { onAddStadium, onClose } = this.props;
+    const stadium = formatStadium(controls);
     await onAddStadium(stadium);
     onClose();
   }
   render() {
     const { controls, submitted } = this.state;
     const {
-      images, name, location, capacity, architect, sport, league, tenants,
+      images, name, location, capacity, architect, sports, leagues, tenants,
     } = controls;
     const { isLoading } = this.props;
-    const leagues = getLeagues(controls.sport.value);
-    const teams = getTeams(controls.league.value);
+    const allLeagues = getLeagues(sports.value);
+    const allTeams = getTeams(leagues.value);
     return (
       <div style={styles.container}>
         <AddInput label="Name" onChange={this.handleInputChange('name')} error={!name.valid && submitted} />
-        <AddInput label="Location" onChange={this.handleInputChange('location')} error={!location.valid && submitted} />
+        {/* <AddInput label="Location" onChange={this.handleInputChange('location')} error={!location.valid && submitted} /> */}
+        <AddLocation onChange={this.handleLocationChange} error={!location.valid && submitted} />
         <AddCheckbox
           label="Sport"
-          items={[sports]}
-          onChange={this.handleCheckboxChange('sport')}
-          value={sport.value}
-          error={!sport.valid && submitted}
+          items={[sportNames]}
+          onChange={this.handleCheckboxChange('sports')}
+          value={sports.value}
+          error={!sports.valid && submitted}
         />
-        {leagues.length > 0 ? (
+        {allLeagues.length > 0 ? (
           <AddCheckbox
             label="League"
-            items={leagues}
-            onChange={this.handleCheckboxChange('league')}
-            value={league.value}
+            items={allLeagues}
+            onChange={this.handleCheckboxChange('leagues')}
+            value={leagues.value}
           />
         ) : null}
-        {teams.length > 0 ? (
-          <AddSelect onChange={this.handleSelectChange} items={teams} value={tenants.value} />
+        {allTeams.length > 0 ? (
+          <AddSelect onChange={this.handleSelectChange} items={allTeams} value={tenants.value} />
         ) : null}
         <AddInput label="Capacity" type="number" onChange={this.handleInputChange('capacity')} error={!capacity.valid && submitted} />
         <AddInput label="Architect" onChange={this.handleInputChange('architect')} error={!architect.valid && submitted} />
@@ -195,7 +204,7 @@ const styles = {
 
 const mapStateToProps = (state) => {
   return {
-    isLoading: state.ui.isLoading,
+    isLoading: state.ui.isLoading[loadingTypes.addStadium],
   };
 };
 

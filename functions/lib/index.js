@@ -10,22 +10,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const functions = require("firebase-functions");
 const cors = require("cors");
-const utils_1 = require("./utils");
-exports.uploadImages = functions.https.onRequest((req, res) => {
+const index_1 = require("./utils/index");
+const admin = require("firebase-admin");
+admin.initializeApp(functions.config().firebase);
+const db = admin.firestore();
+const auth = admin.auth();
+exports.createStadium = functions.https.onRequest((req, res) => {
     cors({ origin: true })(req, res, () => __awaiter(this, void 0, void 0, function* () {
-        const body = JSON.parse(req.body);
-        const results = body.images.map(image => {
-            return utils_1.uploadSingleImage(image);
-        });
+        let user;
         try {
-            const urls = yield Promise.all(results);
-            return res.status(201).json(urls);
+            user = yield index_1.checkAuthorization(auth, req);
         }
         catch (e) {
-            return res.status(500).json({
-                error: e
-            });
+            res.status(401).send(e);
         }
+        let result;
+        try {
+            result = yield index_1.addStadium(db, req.body.stadium);
+        }
+        catch (e) {
+            res.status(406).send(e);
+        }
+        res.status(200).send(result);
     }));
 });
 //# sourceMappingURL=index.js.map

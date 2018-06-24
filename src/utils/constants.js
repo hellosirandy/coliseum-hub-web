@@ -1,6 +1,6 @@
-export const sports = ['Baseball', 'Football', 'Soccer', 'Hockey', 'Basketball'];
+export const sportNames = ['Baseball', 'Football', 'Soccer', 'Hockey', 'Basketball'];
 
-export const leagues = {
+export const leagueNames = {
   baseball: ['MLB', 'NPB', 'CPBL', 'KBO'],
   football: ['NFL', 'NCAA'],
   soccer: ['Premier League', 'La Liga', 'Bundesliga'],
@@ -8,7 +8,7 @@ export const leagues = {
   basketball: ['NBA'],
 };
 
-export const teams = {
+export const teamNames = {
   mlb: [
     'Baltimore Orioles',
     'Boston Red Sox',

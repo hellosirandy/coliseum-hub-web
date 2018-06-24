@@ -1,7 +1,7 @@
 import { UI_START_LOADING, UI_STOP_LOADING } from '../actions/actionTypes';
 
 const initialState = {
-  isLoading: false,
+  isLoading: {},
 };
 
 const reducer = (state = initialState, action) => {
@@ -9,12 +9,18 @@ const reducer = (state = initialState, action) => {
     case UI_START_LOADING:
       return {
         ...state,
-        isLoading: true,
+        isLoading: {
+          ...state.isLoading,
+          [action.loadingType]: true,
+        },
       };
     case UI_STOP_LOADING:
       return {
         ...state,
-        isLoading: false,
+        isLoading: {
+          ...state.isLoading,
+          [action.loadingType]: false,
+        },
       };
     default:
       return state;

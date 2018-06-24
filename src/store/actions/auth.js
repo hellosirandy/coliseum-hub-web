@@ -1,20 +1,21 @@
 import { uiStartLoading, uiStopLoading } from './index';
 import { AUTH_SET_TOKEN, AUTH_REMOVE_TOKEN, AUTH_FAILED, AUTH_CHANGE_STATUS } from './actionTypes';
-import { verifyPassword, exchangeRefreshToken } from '../../apis/api';
+import { verifyPassword, exchangeRefreshToken } from '../../apis/index';
+import { loadingTypes } from '../../utils/index';
 
 export const tryAuth = (authData) => {
   return async (dispatch) => {
-    dispatch(uiStartLoading());
+    dispatch(uiStartLoading(loadingTypes.login));
     let parsedRes;
     try {
       parsedRes = await verifyPassword(authData);
     } catch (e) {
       console.log(e);
       alert('Authentication failed, please try again!');
-      dispatch(uiStopLoading());
+      dispatch(uiStopLoading(loadingTypes.login));
       return;
     }
-    dispatch(uiStopLoading());
+    dispatch(uiStopLoading(loadingTypes.login));
     if (parsedRes.error) {
       console.log(parsedRes);
       dispatch(authFailed(parsedRes.error.message));
@@ -122,7 +123,6 @@ export const authGetToken = () => {
     let token;
     try {
       token = await dispatch(isTokenValid());
-      console.log(token);
     } catch (e) {
       const refreshToken = localStorage.getItem('ch:auth:refreshToken');
       const parsedRes = await exchangeRefreshToken(refreshToken);

@@ -1,20 +1,27 @@
 import * as functions from 'firebase-functions';
 import * as cors from 'cors';
-import { uploadSingleImage } from './utils'
+import { checkAuthorization, addStadium } from './utils/index'
 
-export const uploadImages = functions.https.onRequest((req, res) => {
-  cors({origin: true})(req, res, async () => {
-    const body = JSON.parse(req.body);
-    const results = body.images.map(image => {
-      return uploadSingleImage(image);
-    });
+import * as admin from 'firebase-admin';
+admin.initializeApp(functions.config().firebase);
+
+const db = admin.firestore();
+const auth = admin.auth();
+
+export const createStadium = functions.https.onRequest((req, res) => {
+  cors({ origin: true })(req, res, async () => {
+    let user;
     try {
-      const urls = await Promise.all(results);
-      return res.status(201).json(urls)
-    } catch (e) {
-      return res.status(500).json({
-        error: e
-      })
+      user = await checkAuthorization(auth, req);
+    } catch(e) {
+      res.status(401).send(e);
     }
+    let result;
+    try {
+      result = await addStadium(db, req.body.stadium);
+    } catch(e) {
+      res.status(406).send(e);
+    }
+    res.status(200).send(result);
   })
 });

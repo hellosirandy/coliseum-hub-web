@@ -1,4 +1,6 @@
-const validate = (val, rules, connectedValue) => {
+import { forOwn, isNumber } from 'lodash';
+
+export const validate = (val, rules, connectedValue) => {
   let isValid = true;
   for (let i = 0; i < rules.length; i += 1) {
     const rule = rules[i];
@@ -53,7 +55,18 @@ const objectNotEmptyValidator = (val) => {
 };
 
 const locationValidator = (val) => {
-  return /^(\s*-?\d+(\.\d+)?)(\s*,\s*-?\d+(\.\d+)?)$/.test(val);
+  return isNumber(Number(val.lagitude)) && isNumber(Number(val.longitude));
 };
 
-export default validate;
+export const validateForm = (controls) => {
+  let success = true;
+  forOwn(controls, (value) => {
+    if (!value.valid) {
+      success = false;
+      console.log(value);
+      return undefined;
+    }
+  });
+  return success;
+};
+
