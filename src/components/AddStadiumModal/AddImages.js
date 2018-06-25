@@ -8,6 +8,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormGroup from '@material-ui/core/FormGroup';
 import Grid from '@material-ui/core/Grid';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import { DropDown, InputDialog } from './DropDown';
 
 const AddButton = styled.button`
   padding: 30%;
@@ -20,6 +21,10 @@ const AddButton = styled.button`
 `;
 
 class AddImages extends React.Component {
+  state = {
+    anchorEl: null,
+    dialogOpen: false,
+  }
   handleFileInputChange = (event) => {
     const { files } = event.target;
     for (let i = 0; i < files.length; i += 1) {
@@ -36,7 +41,21 @@ class AddImages extends React.Component {
       };
     }
   }
+  handleDropdownClose = () => {
+    this.setState({ anchorEl: null });
+  }
+  handleAddButtonClick = (event) => {
+    this.setState({ anchorEl: event.currentTarget });
+  }
+  handleDialogOpen = () => {
+    this.setState({ dialogOpen: true });
+  };
+
+  handleDialogClose = () => {
+    this.setState({ dialogOpen: false });
+  };
   render() {
+    const { anchorEl, dialogOpen } = this.state;
     const { classes, images } = this.props;
     const renderImages = images.map(image => (
       <Grid item xs={3} key={image.key} >
@@ -52,9 +71,10 @@ class AddImages extends React.Component {
             <Grid item xs={3}>
               <AddButton
                 className={classes.button}
-                onClick={() => {
-                  this.fileInput.click();
-                }}
+                // onClick={() => {
+                //   this.fileInput.click();
+                // }}
+                onClick={this.handleAddButtonClick}
               >
                 <CloudUploadIcon className={classes.image} color="primary" />
                 <input
@@ -67,7 +87,14 @@ class AddImages extends React.Component {
                   accept="image/*"
                   onChange={this.handleFileInputChange}
                 />
+
               </AddButton>
+              <DropDown
+                anchorEl={anchorEl}
+                onClose={this.handleDropdownClose}
+                onURLClick={this.handleDialogOpen}
+              />
+              <InputDialog open={dialogOpen} handleClose={this.handleDialogClose} />
             </Grid>
           </Grid>
         </FormGroup>

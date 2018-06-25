@@ -6,3 +6,4 @@ admin.initializeApp(functions.config().firebase);
 
 export const createStadium = functions.https.onRequest(http.createStadium);
 export const getStadiums = functions.https.onRequest(http.getStadiums);
+export const downloadImage = functions.https.onRequest(http.downloadImage);

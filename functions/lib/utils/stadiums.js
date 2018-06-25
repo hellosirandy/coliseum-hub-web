@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const firebase_admin_1 = require("firebase-admin");
 const index_1 = require("./index");
+const request = require("request-promise");
 exports.addStadium = (data) => __awaiter(this, void 0, void 0, function* () {
     if (!data) {
         throw { error: "Missing stadium field" };
@@ -29,5 +30,20 @@ exports.addStadium = (data) => __awaiter(this, void 0, void 0, function* () {
 });
 exports.getStadiums = () => __awaiter(this, void 0, void 0, function* () {
     return firebase_admin_1.firestore().collection('stadiums').get();
+});
+exports.downloadImage = (url) => __awaiter(this, void 0, void 0, function* () {
+    // let response;
+    try {
+        const options = {
+            url,
+            encoding: 'base64'
+        };
+        const base64 = yield request.get(options);
+        return index_1.uploadImages([{ base64, name: 'temp.jpg' }]);
+    }
+    catch (e) {
+        console.log(e);
+        throw e;
+    }
 });
 //# sourceMappingURL=stadiums.js.map

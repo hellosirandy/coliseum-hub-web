@@ -1,5 +1,5 @@
 import * as cors from 'cors';
-import * as utils from '../utils/index'
+import * as utils from '../utils/index';
 
 export const createStadium = (req, res) => {
   cors({ origin: true })(req, res, async () => {
@@ -25,7 +25,7 @@ export const createStadium = (req, res) => {
 }
 
 export const getStadiums = (req, res) => {
-  cors({origin: true})(req, res, async() => {
+  cors({origin: true})(req, res, async () => {
     switch(req.method) {
       case 'GET':
         let snapshot;
@@ -42,5 +42,18 @@ export const getStadiums = (req, res) => {
       default:
         res.status(405).send();
     }
+  })
+}
+
+export const downloadImage = (req, res) => {
+  cors({origin: true})(req, res, async () => {
+    const { url } = req.body;
+    let urls;
+    try {
+      urls = await utils.downloadImage(url);
+    } catch(e) {
+      res.status(401).send(e);
+    }
+    res.status(200).send(urls);
   })
 }

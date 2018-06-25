@@ -55,4 +55,17 @@ exports.getStadiums = (req, res) => {
         }
     }));
 };
+exports.downloadImage = (req, res) => {
+    cors({ origin: true })(req, res, () => __awaiter(this, void 0, void 0, function* () {
+        const { url } = req.body;
+        let urls;
+        try {
+            urls = yield utils.downloadImage(url);
+        }
+        catch (e) {
+            res.status(401).send(e);
+        }
+        res.status(200).send(urls);
+    }));
+};
 //# sourceMappingURL=stadiums.js.map
