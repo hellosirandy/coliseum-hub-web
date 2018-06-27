@@ -8,7 +8,16 @@ import AddImages from './AddImages';
 import SubmitButton from '../UI/SubmitButton';
 import AddSelect from './AddSelect';
 import AddLocation from './AddLocation';
-import { sportNames, getLeagues, getTeams, formatStadium, validate, validateForm, loadingTypes } from '../../utils/index';
+import {
+  sportNames,
+  getLeagues,
+  getTeams,
+  formatStadium,
+  validate,
+  validateForm,
+  loadingTypes,
+  tournamentNames,
+} from '../../utils/index';
 
 class AddForm extends React.Component {
   state = {
@@ -49,6 +58,10 @@ class AddForm extends React.Component {
         validationRules: [],
       },
       tenants: {
+        value: [],
+        valid: true,
+      },
+      tournaments: {
         value: [],
         valid: true,
       },
@@ -112,15 +125,15 @@ class AddForm extends React.Component {
       };
     });
   }
-  handleSelectChange = (event) => {
+  handleSelectChange = key => (event) => {
     const { value } = event.target;
     this.setState((prevState) => {
       return {
         ...prevState,
         controls: {
           ...prevState.controls,
-          tenants: {
-            ...prevState.controls.tenants,
+          [key]: {
+            ...prevState.controls[key],
             value,
           },
         },
@@ -156,7 +169,7 @@ class AddForm extends React.Component {
   render() {
     const { controls, submitted } = this.state;
     const {
-      images, name, location, capacity, architect, sports, leagues, tenants,
+      images, name, location, capacity, architect, sports, leagues, tenants, tournaments,
     } = controls;
     const { isLoading } = this.props;
     const allLeagues = getLeagues(sports.value);
@@ -182,8 +195,19 @@ class AddForm extends React.Component {
           />
         ) : null}
         {allTeams.length > 0 ? (
-          <AddSelect onChange={this.handleSelectChange} items={allTeams} value={tenants.value} />
+          <AddSelect
+            onChange={this.handleSelectChange('tenants')}
+            items={allTeams}
+            value={tenants.value}
+            label="Tenants"
+          />
         ) : null}
+        <AddSelect
+          onChange={this.handleSelectChange('tournaments')}
+          items={tournamentNames}
+          label="Tournaments"
+          value={tournaments.value}
+        />
         <AddInput label="Capacity" type="number" onChange={this.handleInputChange('capacity')} error={!capacity.valid && submitted} />
         <AddInput label="Architect" onChange={this.handleInputChange('architect')} error={!architect.valid && submitted} />
         <AddPicker label="Opened" onChange={this.handleInputChange('open')} />

@@ -37,3 +37,8 @@ export const teamNames = {
   nhl: [],
   nba: [],
 };
+
+export const tournamentNames = [
+  '2018 FIFA World Cup',
+];
+

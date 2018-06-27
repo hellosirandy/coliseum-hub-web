@@ -8,23 +8,19 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
 const addSelect = ({
-  onChange, value, items, classes,
+  onChange, value, items, classes, label,
 }) => {
   const content = items.map(item => (
     <MenuItem value={item} key={UUID()}>{item}</MenuItem>
   ));
   return (
     <FormControl fullWidth className={classes.margin}>
-      <InputLabel>Tenants</InputLabel>
+      <InputLabel>{label}</InputLabel>
       <Select
         multiple
         fullWidth
         value={value}
         onChange={onChange}
-        inputProps={{
-          name: 'age',
-          id: 'age-simple',
-        }}
       >
         {content}
       </Select>
@@ -48,6 +44,7 @@ addSelect.propTypes = {
   onChange: PropTypes.func,
   value: PropTypes.arrayOf(PropTypes.string),
   items: PropTypes.arrayOf(PropTypes.string),
+  label: PropTypes.string.isRequired,
 };
 
 export default withStyles(styles)(addSelect);
