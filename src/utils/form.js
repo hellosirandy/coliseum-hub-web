@@ -45,7 +45,7 @@ export const formatStadium = (controls) => {
         latitude: Number(value.value.latitude),
         longitude: Number(value.value.longitude),
       };
-    } else if (key === 'tenants') {
+    } else if (key === 'tenants' || key === 'tournaments') {
       newValue = {};
       value.value.forEach((v) => {
         newValue[v] = true;
