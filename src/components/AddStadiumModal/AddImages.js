@@ -8,7 +8,8 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormGroup from '@material-ui/core/FormGroup';
 import Grid from '@material-ui/core/Grid';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { DropDown, InputDialog } from './DropDown';
+import DropDown from './DropDown';
+import InputDialog from './InputDialog';
 
 const AddButton = styled.button`
   padding: 30%;
@@ -54,6 +55,17 @@ class AddImages extends React.Component {
   handleDialogClose = () => {
     this.setState({ dialogOpen: false });
   };
+
+  handleURLConfirmClick = (val) => {
+    const newImage = {
+      key: UUID(),
+      src: val,
+    };
+    this.props.onChange(newImage);
+  }
+  handleFileClick = () => {
+    this.fileInput.click();
+  }
   render() {
     const { anchorEl, dialogOpen } = this.state;
     const { classes, images } = this.props;
@@ -71,9 +83,6 @@ class AddImages extends React.Component {
             <Grid item xs={3}>
               <AddButton
                 className={classes.button}
-                // onClick={() => {
-                //   this.fileInput.click();
-                // }}
                 onClick={this.handleAddButtonClick}
               >
                 <CloudUploadIcon className={classes.image} color="primary" />
@@ -93,8 +102,13 @@ class AddImages extends React.Component {
                 anchorEl={anchorEl}
                 onClose={this.handleDropdownClose}
                 onURLClick={this.handleDialogOpen}
+                onFileClick={this.handleFileClick}
               />
-              <InputDialog open={dialogOpen} handleClose={this.handleDialogClose} />
+              <InputDialog
+                open={dialogOpen}
+                onClose={this.handleDialogClose}
+                onConfirmClick={this.handleURLConfirmClick}
+              />
             </Grid>
           </Grid>
         </FormGroup>
@@ -107,6 +121,7 @@ const styles = theme => ({
   image: {
     width: '100%',
     height: '100%',
+    objectFit: 'cover',
   },
   button: {
     borderColor: theme.palette.primary.main,

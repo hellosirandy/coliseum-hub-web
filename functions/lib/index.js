@@ -6,5 +6,4 @@ const admin = require("firebase-admin");
 admin.initializeApp(functions.config().firebase);
 exports.createStadium = functions.https.onRequest(http.createStadium);
 exports.getStadiums = functions.https.onRequest(http.getStadiums);
-exports.downloadImage = functions.https.onRequest(http.downloadImage);
 //# sourceMappingURL=index.js.map

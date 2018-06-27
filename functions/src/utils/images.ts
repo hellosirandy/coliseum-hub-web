@@ -3,6 +3,7 @@ import * as UUID from 'uuid-v4';
 import { gcconfig } from '../sensitives'
 import * as GCS from '@google-cloud/storage';
 import * as CPP from 'child-process-promise';
+import * as request from 'request-promise';
 
 const storage = GCS(gcconfig);
 const bucket = storage.bucket(`${gcconfig.projectId}.appspot.com`);
@@ -46,12 +47,52 @@ const uploadSingleImage = async (image) => {
     encodeURIComponent(uploadResponse[0].name) +
     "?alt=media&token=" +
     uuid;
-  return imageUrl;
+  return {
+    url: imageUrl,
+    source: {
+      type: image.type,
+      author: image.author,
+    }
+  };
 }
 
-export const uploadImages = async (images) => {
-  const results = images.map(image => {
-    return uploadSingleImage(image);
-  });
+const requestImage = async (url) => {
+  try {
+    const options = {
+      url,
+      encoding: 'base64'
+    };
+    const base64 = await request.get(options);
+    return { base64, name: 'temp.jpg' };
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+}
+
+export const uploadImages = async (images, uid) => {
+  const results = [];
+  for (const image of images) {
+    let newImage = {
+      ...image,
+      type: "internal",
+      author: uid,
+    };
+    // URL
+    if (!image.base64) {
+      try {
+        const base64AndName = await requestImage(image.src);
+        newImage = {
+          ...image,
+          ...base64AndName,
+          type: "external",
+          author: image.src,
+        }
+      } catch(e) {
+        break;
+      }
+    }
+    results.push(uploadSingleImage(newImage));
+  }
   return Promise.all(results);
 }

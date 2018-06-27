@@ -23,12 +23,12 @@ exports.createStadium = (req, res) => {
                 }
                 let result;
                 try {
-                    result = yield utils.addStadium(req.body.stadium);
+                    result = yield utils.addStadium(req.body.stadium, user.uid);
                 }
                 catch (e) {
                     return res.status(406).send(e);
                 }
-                res.status(200).send(result);
+                res.status(201).send(user);
             default:
                 res.status(405).send();
         }
@@ -53,19 +53,6 @@ exports.getStadiums = (req, res) => {
             default:
                 res.status(405).send();
         }
-    }));
-};
-exports.downloadImage = (req, res) => {
-    cors({ origin: true })(req, res, () => __awaiter(this, void 0, void 0, function* () {
-        const { url } = req.body;
-        let urls;
-        try {
-            urls = yield utils.downloadImage(url);
-        }
-        catch (e) {
-            res.status(401).send(e);
-        }
-        res.status(200).send(urls);
     }));
 };
 //# sourceMappingURL=stadiums.js.map

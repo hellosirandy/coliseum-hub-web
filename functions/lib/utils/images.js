@@ -13,6 +13,7 @@ const UUID = require("uuid-v4");
 const sensitives_1 = require("../sensitives");
 const GCS = require("@google-cloud/storage");
 const CPP = require("child-process-promise");
+const request = require("request-promise");
 const storage = GCS(sensitives_1.gcconfig);
 const bucket = storage.bucket(`${sensitives_1.gcconfig.projectId}.appspot.com`);
 const convertAndUploadImage = (source, extension, uuid, size = null) => __awaiter(this, void 0, void 0, function* () {
@@ -50,12 +51,44 @@ const uploadSingleImage = (image) => __awaiter(this, void 0, void 0, function* (
         encodeURIComponent(uploadResponse[0].name) +
         "?alt=media&token=" +
         uuid;
-    return imageUrl;
+    return {
+        url: imageUrl,
+        source: {
+            type: image.type,
+            author: image.author,
+        }
+    };
 });
-exports.uploadImages = (images) => __awaiter(this, void 0, void 0, function* () {
-    const results = images.map(image => {
-        return uploadSingleImage(image);
-    });
+const requestImage = (url) => __awaiter(this, void 0, void 0, function* () {
+    try {
+        const options = {
+            url,
+            encoding: 'base64'
+        };
+        const base64 = yield request.get(options);
+        return { base64, name: 'temp.jpg' };
+    }
+    catch (e) {
+        console.log(e);
+        throw e;
+    }
+});
+exports.uploadImages = (images, uid) => __awaiter(this, void 0, void 0, function* () {
+    const results = [];
+    for (const image of images) {
+        let newImage = Object.assign({}, image, { type: "internal", author: uid });
+        // URL
+        if (!image.base64) {
+            try {
+                const base64AndName = yield requestImage(image.src);
+                newImage = Object.assign({}, image, base64AndName, { type: "external", author: image.src });
+            }
+            catch (e) {
+                break;
+            }
+        }
+        results.push(uploadSingleImage(newImage));
+    }
     return Promise.all(results);
 });
 //# sourceMappingURL=images.js.map
